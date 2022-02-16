@@ -73,4 +73,28 @@ describe("app", () => {
         });
     });
   });
+
+  describe("GET - /api/articles", () => {
+    test("Status 200: Responds with an array of sorted articles by date in descending order, with its properties", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: articles }) => {
+          expect(articles[0]).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+          expect(articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
+          expect(articles[articles.length - 1].created_at).toBe(
+            "2020-01-07T14:08:00.000Z"
+          );
+        });
+    });
+  });
 });
