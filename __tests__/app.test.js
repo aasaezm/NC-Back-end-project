@@ -35,4 +35,42 @@ describe("app", () => {
         });
     });
   });
+  describe("GET - /api/articles/:article_id", () => {
+    test("Get an article based on the id supplied", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then((response) => {
+          expect(response.body).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              author: expect.any(String),
+              article_id: 1,
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+            })
+          );
+        });
+    });
+    test("Status 404 - for valid but non-existent article_id", () => {
+      return request(app)
+        .get("/api/articles/1000")
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe(
+            "No article found for article_id: 1000"
+          );
+        });
+    });
+    test("Status 400 - Bad request when submitted an invalid ID", () => {
+      return request(app)
+        .get("/api/articles/invalid-id")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request: Invalid input");
+        });
+    });
+  });
 });
