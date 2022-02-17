@@ -83,8 +83,8 @@ describe("app", () => {
           .patch("/api/articles/2")
           .send(body)
           .expect(200)
-          .then(({ body: article }) => {
-            expect(article).toEqual(
+          .then(({ body: patchedArticle }) => {
+            expect(patchedArticle.article).toEqual(
               expect.objectContaining({
                 title: expect.any(String),
                 author: expect.any(String),
@@ -103,8 +103,8 @@ describe("app", () => {
           .patch("/api/articles/1")
           .send(body)
           .expect(200)
-          .then(({ body: article }) => {
-            expect(article).toEqual(
+          .then(({ body: patchedArticle }) => {
+            expect(patchedArticle.article).toEqual(
               expect.objectContaining({
                 title: expect.any(String),
                 author: expect.any(String),
