@@ -73,4 +73,8 @@ describe("app", () => {
         });
     });
   });
+
+  describe("GET - /api/articles/:article_id/comments", () => {
+    test("Status 200 - Gets an array of comments ");
+  });
 });
