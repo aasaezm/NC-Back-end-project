@@ -62,7 +62,7 @@ describe("app", () => {
       });
     });
     describe("GET - /api/articles/:article_id", () => {
-      test("Get an article based on the id supplied", () => {
+      test("Get an article based on the id supplied and gives the total amount of comments for that article", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
