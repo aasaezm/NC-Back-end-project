@@ -154,4 +154,23 @@ describe("app", () => {
       });
     });
   });
+
+  describe("Users", () => {
+    describe("GET - api/users", () => {
+      test("Status 200 - Responds with an array of objects, and each object has a property of 'username'", () => {
+        return request(app)
+          .get("/api/users")
+          .expect(200)
+          .then(({ body: { users } }) => {
+            expect(Array.isArray(users)).toBe(true);
+            expect(users).toEqual([
+              { username: "butter_bridge" },
+              { username: "icellusedkars" },
+              { username: "rogersop" },
+              { username: "lurker" },
+            ]);
+          });
+      });
+    });
+  });
 });
