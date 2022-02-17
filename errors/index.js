@@ -1,5 +1,4 @@
 exports.handleCustomErrors = (err, req, res, next) => {
-  console.log(err);
   if (err.status) {
     res.status(err.status).send({ msg: err.msg });
   } else {
@@ -9,7 +8,11 @@ exports.handleCustomErrors = (err, req, res, next) => {
 
 exports.handlePsqlErrors = (err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Bad Request: Invalid input" });
+    res.status(400).send({ msg: "Bad Request: Invalid Input" });
+  } else if (err.code === "23502") {
+    res
+      .status(400)
+      .send({ msg: "Bad Request: Malformed body / Missing required fields" });
   } else next(err);
 };
 
