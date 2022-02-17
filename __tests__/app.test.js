@@ -41,6 +41,7 @@ describe("app", () => {
         .get("/api/articles/1")
         .expect(200)
         .then((response) => {
+          console.log(response);
           expect(response.body).toEqual(
             expect.objectContaining({
               title: expect.any(String),
@@ -50,6 +51,7 @@ describe("app", () => {
               topic: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
+              comment_count: "11",
             })
           );
         });
