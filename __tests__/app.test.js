@@ -79,7 +79,7 @@ describe("app", () => {
       return request(app)
         .get("/api/articles")
         .expect(200)
-        .then(({ body: articles }) => {
+        .then(({ body: { articles } }) => {
           expect(articles[0]).toEqual(
             expect.objectContaining({
               author: expect.any(String),
