@@ -38,6 +38,29 @@ describe("app", () => {
   });
 
   describe("Articles", () => {
+    describe("GET - /api/articles", () => {
+      test("Status 200: Responds with an array of sorted articles by date in descending order, with its properties", () => {
+        return request(app)
+          .get("/api/articles")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0]).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+            expect(articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
+            expect(articles[articles.length - 1].created_at).toBe(
+              "2020-01-07T14:08:00.000Z"
+            );
+          });
+      });
+    });
     describe("GET - /api/articles/:article_id", () => {
       test("Get an article based on the id supplied", () => {
         return request(app)
@@ -76,6 +99,7 @@ describe("app", () => {
           });
       });
     });
+
     describe("PATCH - /api/articles/:article_id", () => {
       test("Status 200 - The votes from the selected article are increased by the provided amount", () => {
         const body = { inc_votes: 1 };

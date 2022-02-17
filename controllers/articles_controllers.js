@@ -1,5 +1,6 @@
 const {
   fetchArticleById,
+  fetchArticles,
   updateArticleById,
 } = require("../models/articles_models.js");
 
@@ -11,6 +12,12 @@ exports.getArticleById = (req, res, next) => {
       res.status(200).send(article);
     })
     .catch(next);
+};
+
+exports.getArticles = (req, res, next) => {
+  fetchArticles().then((articles) => {
+    res.status(200).send({ articles });
+  });
 };
 
 exports.patchArticleById = (req, res, next) => {
