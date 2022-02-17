@@ -74,7 +74,20 @@ describe("app", () => {
     });
   });
 
-  describe("GET - /api/articles/:article_id/comments", () => {
-    test("Status 200 - Gets an array of comments ");
+  describe.only("GET - /api/articles/:article_id/comments", () => {
+    test("Status 200 - Gets an array of comments for the given article Id", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then((response) => {
+          expect(response.body).objectContaining({
+            comment_id: expect.any(Number),
+            author: expect.any(String),
+            body: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+          });
+        });
+    });
   });
 });

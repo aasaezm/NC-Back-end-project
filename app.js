@@ -16,6 +16,7 @@ app.get("/api/topics", getTopics);
 
 //Articles
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles/:article_id/comments");
 
 //Error handlers
 app.all("/*", (req, res) => {
