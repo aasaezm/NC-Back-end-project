@@ -21,3 +21,24 @@ exports.fetchArticleById = (article_id) => {
       return article;
     });
 };
+
+exports.updateArticleById = (article_id, inc_votes) => {
+  return db
+    .query(
+      `UPDATE articles
+       SET votes = votes + $2
+       WHERE article_id = $1
+       RETURNING *;`,
+      [article_id, inc_votes]
+    )
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `No article found for article_id: ${article_id}`,
+        });
+      }
+      const [article] = rows;
+      return article;
+    });
+};
