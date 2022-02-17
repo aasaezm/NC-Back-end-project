@@ -40,9 +40,8 @@ describe("app", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
-        .then((response) => {
-          console.log(response);
-          expect(response.body).toEqual(
+        .then(({ body: { article } }) => {
+          expect(article).toEqual(
             expect.objectContaining({
               title: expect.any(String),
               author: expect.any(String),
