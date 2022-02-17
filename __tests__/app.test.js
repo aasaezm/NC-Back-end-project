@@ -62,12 +62,12 @@ describe("app", () => {
       });
     });
     describe("GET - /api/articles/:article_id", () => {
-      test("Get an article based on the id supplied", () => {
+      test("Get an article based on the id supplied and gives the total amount of comments for that article", () => {
         return request(app)
           .get("/api/articles/1")
           .expect(200)
-          .then((response) => {
-            expect(response.body).toEqual(
+          .then(({ body: { article } }) => {
+            expect(article).toEqual(
               expect.objectContaining({
                 title: expect.any(String),
                 author: expect.any(String),
@@ -76,6 +76,7 @@ describe("app", () => {
                 topic: expect.any(String),
                 created_at: expect.any(String),
                 votes: expect.any(Number),
+                comment_count: "11",
               })
             );
           });
@@ -107,8 +108,8 @@ describe("app", () => {
           .patch("/api/articles/2")
           .send(body)
           .expect(200)
-          .then(({ body: patchedArticle }) => {
-            expect(patchedArticle.article).toEqual(
+          .then(({ body: { patchedArticle } }) => {
+            expect(patchedArticle).toEqual(
               expect.objectContaining({
                 title: expect.any(String),
                 author: expect.any(String),
@@ -127,8 +128,8 @@ describe("app", () => {
           .patch("/api/articles/1")
           .send(body)
           .expect(200)
-          .then(({ body: patchedArticle }) => {
-            expect(patchedArticle.article).toEqual(
+          .then(({ body: { patchedArticle } }) => {
+            expect(patchedArticle).toEqual(
               expect.objectContaining({
                 title: expect.any(String),
                 author: expect.any(String),
