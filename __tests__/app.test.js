@@ -1,4 +1,5 @@
 const request = require("supertest");
+const { post } = require("../app.js");
 const app = require("../app.js");
 const connection = require("../db/connection.js");
 const testData = require("../db/data/test-data/index");
@@ -213,6 +214,21 @@ describe("app", () => {
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).toBe("No article found for article_id: 100");
+          });
+      });
+    });
+    describe.only("POST - /api/articles/:articles_id/comments", () => {
+      test("Status 201 - Responds with the newly posted comment. The new comment accepts an object with 'username' and 'body' properties", () => {
+        const body = {
+          username: "quarki",
+          body: "I highly recommend this!",
+        };
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send(body)
+          .expect(201)
+          .then((response) => {
+            // console.log(response);
           });
       });
     });

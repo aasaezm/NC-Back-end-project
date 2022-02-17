@@ -9,6 +9,7 @@ const {
 
 const {
   getCommentsByArticleId,
+  postComment,
 } = require("./controllers/comments_controllers.js");
 
 const {
@@ -26,9 +27,12 @@ app.get("/api/topics", getTopics);
 
 //Articles
 app.get("/api/articles/:article_id", getArticleById);
-app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.get("/api/articles", getArticles);
 app.patch("/api/articles/:article_id", patchArticleById);
+
+//Comments
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.post("/api/articles/:article_id/comments", postComment);
 
 //Users
 app.get("/api/users", getUsers);
