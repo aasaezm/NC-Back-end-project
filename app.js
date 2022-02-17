@@ -4,6 +4,11 @@ const {
   getArticleById,
   patchArticleById,
 } = require("./controllers/articles_controllers");
+
+const {
+  getCommentsByArticleId,
+} = require("./controllers/comments_controllers.js");
+
 const {
   handleCustomErrors,
   handlePsqlErrors,
