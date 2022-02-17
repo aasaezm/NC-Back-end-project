@@ -161,7 +161,7 @@ describe("app", () => {
         return request(app)
           .get("/api/users")
           .expect(200)
-          .then(({ body: users }) => {
+          .then(({ body: { users } }) => {
             expect(Array.isArray(users)).toBe(true);
             expect(users).toEqual([
               { username: "butter_bridge" },
