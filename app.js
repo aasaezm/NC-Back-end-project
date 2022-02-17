@@ -6,6 +6,11 @@ const {
   patchArticleById,
   getArticles,
 } = require("./controllers/articles_controllers");
+
+const {
+  getCommentsByArticleId,
+} = require("./controllers/comments_controllers.js");
+
 const {
   handleCustomErrors,
   handlePsqlErrors,
@@ -21,6 +26,7 @@ app.get("/api/topics", getTopics);
 
 //Articles
 app.get("/api/articles/:article_id", getArticleById);
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.get("/api/articles", getArticles);
 app.patch("/api/articles/:article_id", patchArticleById);
 

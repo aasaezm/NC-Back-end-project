@@ -180,6 +180,44 @@ describe("app", () => {
     });
   });
 
+  describe("Comments", () => {
+    describe("GET - /api/articles/:article_id/comments", () => {
+      test("Status 200 - Gets an array of comments for the given article Id", () => {
+        return request(app)
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments.length).toBe(11);
+            expect(comments[0]).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+          });
+      });
+      test("Status 400 - Bad request when invalid input is passed", () => {
+        return request(app)
+          .get("/api/articles/one/comments")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad Request: Invalid Input");
+          });
+      });
+      test("Status 404 - Valid request but item not found", () => {
+        return request(app)
+          .get("/api/articles/100/comments")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("No article found for article_id: 100");
+          });
+      });
+    });
+  });
+
   describe("Users", () => {
     describe("GET - api/users", () => {
       test("Status 200 - Responds with an array of objects, and each object has a property of 'username'", () => {
