@@ -81,6 +81,24 @@ describe("app", () => {
             );
           });
       });
+      test("Status 404 - for valid but non-existent article_id", () => {
+        return request(app)
+          .get("/api/articles/1000")
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe(
+              "No article found for article_id: 1000"
+            );
+          });
+      });
+      test("Status 400 - Bad request when submitted an invalid ID", () => {
+        return request(app)
+          .get("/api/articles/invalid-id")
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request: Invalid Input");
+          });
+      });
     });
 
     describe("PATCH - /api/articles/:article_id", () => {
