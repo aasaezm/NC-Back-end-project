@@ -22,6 +22,17 @@ exports.fetchArticleById = (article_id) => {
     });
 };
 
+exports.fetchArticles = () => {
+  return db
+    .query(
+      `SELECT author, title, article_id, topic, created_at, votes FROM articles
+  ORDER BY created_at DESC;`
+    )
+    .then(({ rows: articles }) => {
+      return articles;
+    });
+};
+
 exports.updateArticleById = (article_id, inc_votes) => {
   return db
     .query(
