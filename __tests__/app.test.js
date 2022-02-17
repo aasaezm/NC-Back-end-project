@@ -173,5 +173,21 @@ describe("app", () => {
           );
         });
     });
+    test("Status 400 - Bad request when invalid input is passed", () => {
+      return request(app)
+        .get("/api/articles/one/comments")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad Request: Invalid Input");
+        });
+    });
+    test("Status 404 - Valid request but item not found", () => {
+      return request(app)
+        .get("/api/articles/100/comments")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("No article found for article_id: 100");
+        });
+    });
   });
 });
