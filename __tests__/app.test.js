@@ -39,7 +39,7 @@ describe("app", () => {
 
   describe("Articles", () => {
     describe("GET - /api/articles", () => {
-      test("Status 200: Responds with an array of sorted articles by date in descending order, with its properties", () => {
+      test("Status 200: Responds with an array of sorted articles by date in descending order, with its properties and the count of comments for each article", () => {
         return request(app)
           .get("/api/articles")
           .expect(200)
@@ -58,6 +58,8 @@ describe("app", () => {
             expect(articles[articles.length - 1].created_at).toBe(
               "2020-01-07T14:08:00.000Z"
             );
+            expect(articles[0].comment_count).toBe("2");
+            expect(articles[5].comment_count).toBe("11");
           });
       });
     });
