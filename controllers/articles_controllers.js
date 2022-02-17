@@ -9,7 +9,7 @@ exports.getArticleById = (req, res, next) => {
 
   fetchArticleById(article_id)
     .then((article) => {
-      res.status(200).send({ article: article });
+      res.status(200).send({ article });
     })
     .catch(next);
 };
@@ -29,7 +29,7 @@ exports.patchArticleById = (req, res, next) => {
   } = req;
   updateArticleById(article_id, inc_votes)
     .then((patchedArticle) => {
-      res.status(200).send({ article: patchedArticle });
+      res.status(200).send({ patchedArticle });
     })
     .catch(next);
 };
