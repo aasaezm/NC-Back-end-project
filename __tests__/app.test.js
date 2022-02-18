@@ -3,6 +3,7 @@ const app = require("../app.js");
 const connection = require("../db/connection.js");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
+const db = require("../db/connection.js");
 
 beforeEach(() => seed(testData));
 afterAll(() => connection.end());
@@ -228,7 +229,15 @@ describe("app", () => {
               .get("/api/articles/1/comments")
               .expect(200)
               .then(({ body: { comments } }) => {
+                for (let i = 0; i < comments.length; i++) {
+                  expect(comments.comment_id).not.toBe(2);
+                }
                 expect(comments.length).toBe(10);
+                db.query(`SELECT * FROM comments WHERE comment_id = 2;`).then(
+                  ({ rows }) => {
+                    expect(rows).toEqual([]);
+                  }
+                );
               });
           });
       });
