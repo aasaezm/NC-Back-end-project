@@ -217,18 +217,72 @@ describe("app", () => {
           });
       });
     });
-    describe.only("POST - /api/articles/:articles_id/comments", () => {
+    describe("POST - /api/articles/:articles_id/comments", () => {
       test("Status 201 - Responds with the newly posted comment. The new comment accepts an object with 'username' and 'body' properties", () => {
         const body = {
-          username: "quarki",
+          username: "rogersop",
           body: "I highly recommend this!",
         };
         return request(app)
           .post("/api/articles/2/comments")
           .send(body)
           .expect(201)
-          .then((response) => {
-            // console.log(response);
+          .then(({ body: { postedComment } }) => {
+            expect(postedComment).toEqual(
+              expect.objectContaining({
+                comment_id: 19,
+                body: "I highly recommend this!",
+                author: "rogersop",
+              })
+            );
+          });
+      });
+      test("Status 400 - Bad request when malformed body or missing required fields", () => {
+        const body = {};
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send(body)
+          .expect(400)
+          .then(({ body: { msg: errorMessage } }) => {
+            expect(errorMessage).toBe(
+              "Bad Request: Malformed body / Missing required fields"
+            );
+          });
+      });
+      test("Status 400 - Bad request when passed invalid input i.e. Passing an author that still doesn't exist in the database", () => {
+        const body = { username: "quarki", body: "Woow" };
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send(body)
+          .expect(400)
+          .then(({ body: { msg: errorMessage } }) => {
+            expect(errorMessage).toBe(
+              "Bad Request: Either the article or the author to be input still doesn't exist in the database"
+            );
+          });
+      });
+      test("Status 400 - Bad request when passed an empty body", () => {
+        const body = { username: "rogersop", body: "" };
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send(body)
+          .expect(400)
+          .then(({ body: { msg: errorMessage } }) => {
+            expect(errorMessage).toBe(
+              "Bad Request: Malformed body / Missing required fields"
+            );
+          });
+      });
+      test("Status 400 - The article to which the comment is to be attached, doesn't exist", () => {
+        const body = { username: "rogersop", body: "Woow" };
+        return request(app)
+          .post("/api/articles/100/comments")
+          .send(body)
+          .expect(400)
+          .then(({ body: { msg: errorMessage } }) => {
+            expect(errorMessage).toBe(
+              "Bad Request: Either the article or the author to be input still doesn't exist in the database"
+            );
           });
       });
     });

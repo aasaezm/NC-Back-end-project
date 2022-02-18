@@ -19,16 +19,22 @@ exports.fetchCommentsByArticleId = (article_id) => {
 };
 
 exports.insertComment = (article_id, author, body) => {
+  if (body === undefined || body.length === 0) {
+    return Promise.reject({
+      code: "23502",
+    });
+  }
+
   return db
     .query(
       `INSERT INTO comments
-  (author, body, article_id)
+  (article_id, author, body)
   VALUES 
     ($1, $2, $3)
     RETURNING *;`,
       [article_id, author, body]
     )
-    .then((response) => {
-      console.log(response);
+    .then(({ rows }) => {
+      return rows[0];
     });
 };

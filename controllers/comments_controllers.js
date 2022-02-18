@@ -21,8 +21,8 @@ exports.postComment = (req, res, next) => {
   const { body } = comment;
 
   insertComment(article_id, author, body)
-    .then((response) => {
-      res.status(201).send(response);
+    .then((comment) => {
+      res.status(201).send({ postedComment: comment });
     })
     .catch(next);
 };
