@@ -178,6 +178,17 @@ describe("app", () => {
           });
       });
     });
+    describe.only("GET /api/articles (queries)", () => {
+      test("sorts articles by article_id", () => {
+        return request(app)
+          .get("/api/articles?sort_by=article_id")
+          .expect(200)
+          .then((response) => {
+            expect(response[0].article_id).toBe(17);
+            expect(response[response.length - 1].article_id).toBe(1);
+          });
+      });
+    });
   });
 
   describe("Comments", () => {
