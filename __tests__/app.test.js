@@ -3,6 +3,7 @@ const app = require("../app.js");
 const connection = require("../db/connection.js");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
+const db = require("../db/connection.js");
 
 beforeEach(() => seed(testData));
 afterAll(() => connection.end());
@@ -39,7 +40,7 @@ describe("app", () => {
 
   describe("Articles", () => {
     describe("GET - /api/articles", () => {
-      test("Status 200: Responds with an array of sorted articles by date in descending order, with its properties", () => {
+      test("Status 200: Responds with an array of sorted articles by date in descending order, with its properties and the count of comments for each article", () => {
         return request(app)
           .get("/api/articles")
           .expect(200)
@@ -58,6 +59,8 @@ describe("app", () => {
             expect(articles[articles.length - 1].created_at).toBe(
               "2020-01-07T14:08:00.000Z"
             );
+            expect(articles[0].comment_count).toBe("2");
+            expect(articles[5].comment_count).toBe("11");
           });
       });
     });
@@ -224,6 +227,115 @@ describe("app", () => {
           .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).toBe("No article found for article_id: 100");
+          });
+      });
+    });
+    describe("DELETE - /api/comments/:comments_id", () => {
+      test("Status 204 - Deletes the given comment by its id", () => {
+        return request(app)
+          .delete("/api/comments/2")
+          .expect(204)
+          .then(() => {
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(({ body: { comments } }) => {
+                for (let i = 0; i < comments.length; i++) {
+                  expect(comments.comment_id).not.toBe(2);
+                }
+                expect(comments.length).toBe(10);
+                db.query(`SELECT * FROM comments WHERE comment_id = 2;`).then(
+                  ({ rows }) => {
+                    expect(rows).toEqual([]);
+                  }
+                );
+              });
+          });
+      });
+      test("Status 404 - The comment to delete does not exist", () => {
+        return request(app)
+          .delete("/api/comments/1000")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("No comment found for comment_id: 1000");
+          });
+      });
+      test("Status 400 - Invalid Id", () => {
+        return request(app)
+          .delete("/api/comments/one")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad Request: Invalid Input");
+          });
+      });
+    });
+
+    describe("POST - /api/articles/:articles_id/comments", () => {
+      test("Status 201 - Responds with the newly posted comment. The new comment accepts an object with 'username' and 'body' properties", () => {
+        const body = {
+          username: "rogersop",
+          body: "I highly recommend this!",
+        };
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send(body)
+          .expect(201)
+          .then(({ body: { postedComment } }) => {
+            expect(postedComment).toEqual(
+              expect.objectContaining({
+                comment_id: 19,
+                body: "I highly recommend this!",
+                author: "rogersop",
+              })
+            );
+          });
+      });
+      test("Status 400 - Bad request when malformed body or missing required fields", () => {
+        const body = {};
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send(body)
+          .expect(400)
+          .then(({ body: { msg: errorMessage } }) => {
+            expect(errorMessage).toBe(
+              "Bad Request: Malformed body / Missing required fields"
+            );
+          });
+      });
+      test("Status 400 - Bad request when passed invalid input i.e. Passing an author that still doesn't exist in the database", () => {
+        const body = { username: "quarki", body: "Woow" };
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send(body)
+          .expect(400)
+          .then(({ body: { msg: errorMessage } }) => {
+            expect(errorMessage).toBe(
+              "Bad Request: Either the article or the author to be input still doesn't exist in the database"
+            );
+          });
+      });
+      test("Status 400 - Bad request when passed an empty body", () => {
+        const body = { username: "rogersop", body: "" };
+        return request(app)
+          .post("/api/articles/2/comments")
+          .send(body)
+          .expect(400)
+          .then(({ body: { msg: errorMessage } }) => {
+            expect(errorMessage).toBe(
+              "Bad Request: Malformed body / Missing required fields"
+            );
+          });
+      });
+      test("Status 400 - The article to which the comment is to be attached, doesn't exist", () => {
+        const body = { username: "rogersop", body: "Woow" };
+        return request(app)
+          .post("/api/articles/100/comments")
+          .send(body)
+          .expect(400)
+          .then(({ body: { msg: errorMessage } }) => {
+            expect(errorMessage).toBe(
+              "Bad Request: Either the article or the author to be input still doesn't exist in the database"
+            );
           });
       });
     });
