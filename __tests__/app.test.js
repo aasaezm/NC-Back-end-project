@@ -71,6 +71,7 @@ describe("app", () => {
           .get("/api/articles/1")
           .expect(200)
           .then(({ body: { article } }) => {
+            console.log(article);
             expect(article).toEqual(
               expect.objectContaining({
                 title: expect.any(String),

@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -22,6 +22,22 @@
           "created_at": 1527695953341
         }
       ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an object with the selected article with its properties and the total amount of comments associated with it",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "author": "butter_bridge",
+        "title": "Living in the shadow of a great man",
+        "article_id": 1,
+        "body": "I find this existence challenging",
+        "topic": "mitch",
+        "created_at": "2020-07-09T20:11:00.000Z",
+        "votes": 100,
+        "comment_count": "11"
+      }
     }
   }
 }
