@@ -218,6 +218,23 @@ describe("app", () => {
           });
       });
     });
+    describe.only("DELETE - /api/comments/:comments_id", () => {
+      test("Status 204 - Deletes the given comment by its id", () => {
+        return request(app)
+          .delete("/api/comments/2")
+          .expect(204)
+          .then((response) => {
+            console.log(response);
+            expect(response).toEqual({});
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then((response) => {
+                expect(response.comment_count).toBe(10);
+              });
+          });
+      });
+    });
   });
 
   describe("Users", () => {
