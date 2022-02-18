@@ -1,5 +1,4 @@
 exports.handleCustomErrors = (err, req, res, next) => {
-  console.log(err);
   if (err.status) {
     res.status(err.status).send({ msg: err.msg });
   } else {
@@ -14,6 +13,10 @@ exports.handlePsqlErrors = (err, req, res, next) => {
     res
       .status(400)
       .send({ msg: "Bad Request: Malformed body / Missing required fields" });
+  } else if (err.code === "23503") {
+    res.status(400).send({
+      msg: "Bad Request: Either the article or the author to be input still doesn't exist in the database",
+    });
   } else next(err);
 };
 
