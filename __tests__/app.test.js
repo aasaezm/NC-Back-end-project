@@ -187,6 +187,7 @@ describe("app", () => {
           .get("/api/articles?sort_by=article_id")
           .expect(200)
           .then((response) => {
+            console.log(reponse);
             expect(response[0].article_id).toBe(17);
             expect(response[response.length - 1].article_id).toBe(1);
           });
