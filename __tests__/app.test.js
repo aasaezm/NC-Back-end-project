@@ -1,9 +1,9 @@
 const request = require("supertest");
-const { post } = require("../app.js");
 const app = require("../app.js");
 const connection = require("../db/connection.js");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
+const db = require("../db/connection.js");
 
 beforeEach(() => seed(testData));
 afterAll(() => connection.end());
@@ -219,6 +219,46 @@ describe("app", () => {
           });
       });
     });
+    describe("DELETE - /api/comments/:comments_id", () => {
+      test("Status 204 - Deletes the given comment by its id", () => {
+        return request(app)
+          .delete("/api/comments/2")
+          .expect(204)
+          .then(() => {
+            return request(app)
+              .get("/api/articles/1/comments")
+              .expect(200)
+              .then(({ body: { comments } }) => {
+                for (let i = 0; i < comments.length; i++) {
+                  expect(comments.comment_id).not.toBe(2);
+                }
+                expect(comments.length).toBe(10);
+                db.query(`SELECT * FROM comments WHERE comment_id = 2;`).then(
+                  ({ rows }) => {
+                    expect(rows).toEqual([]);
+                  }
+                );
+              });
+          });
+      });
+      test("Status 404 - The comment to delete does not exist", () => {
+        return request(app)
+          .delete("/api/comments/1000")
+          .expect(404)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("No comment found for comment_id: 1000");
+          });
+      });
+      test("Status 400 - Invalid Id", () => {
+        return request(app)
+          .delete("/api/comments/one")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("Bad Request: Invalid Input");
+          });
+      });
+    });
+
     describe("POST - /api/articles/:articles_id/comments", () => {
       test("Status 201 - Responds with the newly posted comment. The new comment accepts an object with 'username' and 'body' properties", () => {
         const body = {
