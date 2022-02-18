@@ -4,6 +4,7 @@ const connection = require("../db/connection.js");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const db = require("../db/connection.js");
+const { get } = require("express/lib/response");
 
 beforeEach(() => seed(testData));
 afterAll(() => connection.end());
@@ -344,6 +345,21 @@ describe("app", () => {
               { username: "rogersop" },
               { username: "lurker" },
             ]);
+          });
+      });
+    });
+  });
+
+  describe("API", () => {
+    describe("GET - api", () => {
+      test("Status 200 - Returns a JSON describing all the available endpoints in the API", () => {
+        return request(app)
+          .get("/api")
+          .expect(200)
+          .then(({ body: { endpoints } }) => {
+            expect(endpoints["GET /api"].description).toBe(
+              "serves up a json representation of all the available endpoints of the api"
+            );
           });
       });
     });
