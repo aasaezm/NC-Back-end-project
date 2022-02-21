@@ -182,14 +182,57 @@ describe("app", () => {
       });
     });
     describe.only("GET /api/articles (queries)", () => {
-      test("sorts articles by article_id", () => {
+      test("Status 200 - sorts articles by article_id in descendent order", () => {
         return request(app)
-          .get("/api/articles?sort_by=article_id")
+          .get("/api/articles?sort_by=article_id&order=desc")
           .expect(200)
-          .then((response) => {
-            console.log(reponse);
-            expect(response[0].article_id).toBe(17);
-            expect(response[response.length - 1].article_id).toBe(1);
+          .then(({ body: { articles } }) => {
+            console.log(articles);
+            expect(articles[0].article_id).toBe(12);
+            expect(articles[articles.length - 1].article_id).toBe(1);
+            expect(articles.length).toBe(12);
+          });
+      });
+      test("Status 200 - sorts articles by title in ascendent order for the topic mitch", () => {
+        return request(app)
+          .get("/api/articles?sort_by=title&order=asc&topic=mitch")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0].title).toBe("A");
+            expect(articles[articles.length - 1].title).toBe("Z");
+            expect(articles.length).toBe(11);
+          });
+      });
+      test("Status 200 - Filters the articles by the topic value specified", () => {
+        return request(app)
+          .get("/api/articles?topic=cats")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0]).toEqual(
+              expect.objectContaining({
+                title: "UNCOVERED: catspiracy to bring down democracy",
+                topic: "cats",
+                author: "rogersop",
+              })
+            );
+          });
+      });
+      test("Status 400: Invalid query order", () => {
+        return request(app)
+          .get("/api/articles?sort_by=article_id&order=not-valid")
+          .expect(400)
+          .then(({ body }) => {
+            const { msg: message } = body;
+            expect(message).toBe("Invalid query order");
+          });
+      });
+      test("Status 400: Invalid query sort_by", () => {
+        return request(app)
+          .get("/api/articles?sort_by=NOT-VALID&order=desc")
+          .expect(400)
+          .then(({ body }) => {
+            const { msg: message } = body;
+            expect(message).toBe("Invalid query sort_by");
           });
       });
     });
