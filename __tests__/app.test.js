@@ -4,7 +4,6 @@ const connection = require("../db/connection.js");
 const testData = require("../db/data/test-data/index");
 const seed = require("../db/seeds/seed");
 const db = require("../db/connection.js");
-const { get } = require("express/lib/response");
 
 beforeEach(() => seed(testData));
 afterAll(() => connection.end());
@@ -360,6 +359,8 @@ describe("app", () => {
             expect(endpoints["GET /api"].description).toBe(
               "serves up a json representation of all the available endpoints of the api"
             );
+            expect(endpoints["GET /api/articles"].queries[0]).toBe("author");
+            expect(endpoints["GET /api/articles"].queries.length).toBe(4);
           });
       });
     });
