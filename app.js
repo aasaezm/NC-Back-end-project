@@ -13,6 +13,8 @@ const {
   postComment,
 } = require("./controllers/comments_controllers.js");
 
+const { getEndpoints } = require("./controllers/api_controllers.js");
+
 const {
   handleCustomErrors,
   handlePsqlErrors,
@@ -38,6 +40,9 @@ app.post("/api/articles/:article_id/comments", postComment);
 
 //Users
 app.get("/api/users", getUsers);
+
+//API
+app.get("/api", getEndpoints);
 
 //Error handlers
 app.all("/*", (req, res) => {

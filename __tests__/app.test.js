@@ -403,4 +403,21 @@ describe("app", () => {
       });
     });
   });
+
+  describe("API", () => {
+    describe("GET - api", () => {
+      test("Status 200 - Returns a JSON describing all the available endpoints in the API", () => {
+        return request(app)
+          .get("/api")
+          .expect(200)
+          .then(({ body: { endpoints } }) => {
+            expect(endpoints["GET /api"].description).toBe(
+              "serves up a json representation of all the available endpoints of the api"
+            );
+            expect(endpoints["GET /api/articles"].queries[0]).toBe("author");
+            expect(endpoints["GET /api/articles"].queries.length).toBe(4);
+          });
+      });
+    });
+  });
 });
