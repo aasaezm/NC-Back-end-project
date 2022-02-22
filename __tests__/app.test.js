@@ -181,13 +181,12 @@ describe("app", () => {
           });
       });
     });
-    describe.only("GET /api/articles (queries)", () => {
+    describe("GET /api/articles (queries)", () => {
       test("Status 200 - sorts articles by article_id in descendent order", () => {
         return request(app)
           .get("/api/articles?sort_by=article_id&order=desc")
           .expect(200)
           .then(({ body: { articles } }) => {
-            console.log(articles);
             expect(articles[0].article_id).toBe(12);
             expect(articles[articles.length - 1].article_id).toBe(1);
             expect(articles.length).toBe(12);
@@ -233,6 +232,37 @@ describe("app", () => {
           .then(({ body }) => {
             const { msg: message } = body;
             expect(message).toBe("Invalid query sort_by");
+          });
+      });
+      test("Status 404: Topic not found", () => {
+        return request(app)
+          .get("/api/articles?topic=not-a-topic")
+          .expect(404)
+          .then(({ body }) => {
+            const { msg: message } = body;
+            expect(message).toBe("topic not found on articles table");
+          });
+      });
+      test("Status 200: When an invalid topic is provided, it gets ignored and returns the articles requested", () => {
+        return request(app)
+          .get("/api/articles?topic=")
+          .then(({ body: { articles } }) => {
+            expect(articles[0]).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+            expect(articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
+            expect(articles[articles.length - 1].created_at).toBe(
+              "2020-01-07T14:08:00.000Z"
+            );
+            expect(articles[0].comment_count).toBe("2");
+            expect(articles[5].comment_count).toBe("11");
           });
       });
     });
