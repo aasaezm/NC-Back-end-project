@@ -181,6 +181,91 @@ describe("app", () => {
           });
       });
     });
+    describe("GET /api/articles (queries)", () => {
+      test("Status 200 - sorts articles by article_id in descendent order", () => {
+        return request(app)
+          .get("/api/articles?sort_by=article_id&order=desc")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0].article_id).toBe(12);
+            expect(articles[articles.length - 1].article_id).toBe(1);
+            expect(articles.length).toBe(12);
+          });
+      });
+      test("Status 200 - sorts articles by title in ascendent order for the topic mitch", () => {
+        return request(app)
+          .get("/api/articles?sort_by=title&order=asc&topic=mitch")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0].title).toBe("A");
+            expect(articles[articles.length - 1].title).toBe("Z");
+            expect(articles.length).toBe(11);
+          });
+      });
+      test("Status 200 - Filters the articles by the topic value specified", () => {
+        return request(app)
+          .get("/api/articles?topic=cats")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0]).toEqual(
+              expect.objectContaining({
+                title: "UNCOVERED: catspiracy to bring down democracy",
+                topic: "cats",
+                author: "rogersop",
+              })
+            );
+          });
+      });
+      test("Status 400: Invalid query order", () => {
+        return request(app)
+          .get("/api/articles?sort_by=article_id&order=not-valid")
+          .expect(400)
+          .then(({ body }) => {
+            const { msg: message } = body;
+            expect(message).toBe("Invalid query order");
+          });
+      });
+      test("Status 400: Invalid query sort_by", () => {
+        return request(app)
+          .get("/api/articles?sort_by=NOT-VALID&order=desc")
+          .expect(400)
+          .then(({ body }) => {
+            const { msg: message } = body;
+            expect(message).toBe("Invalid query sort_by");
+          });
+      });
+      test("Status 404: Topic not found", () => {
+        return request(app)
+          .get("/api/articles?topic=not-a-topic")
+          .expect(404)
+          .then(({ body }) => {
+            const { msg: message } = body;
+            expect(message).toBe("topic not found on articles table");
+          });
+      });
+      test("Status 200: When an invalid topic is provided, it gets ignored and returns the articles requested", () => {
+        return request(app)
+          .get("/api/articles?topic=")
+          .then(({ body: { articles } }) => {
+            expect(articles[0]).toEqual(
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+              })
+            );
+            expect(articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
+            expect(articles[articles.length - 1].created_at).toBe(
+              "2020-01-07T14:08:00.000Z"
+            );
+            expect(articles[0].comment_count).toBe("2");
+            expect(articles[5].comment_count).toBe("11");
+          });
+      });
+    });
   });
 
   describe("Comments", () => {

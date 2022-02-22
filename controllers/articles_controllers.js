@@ -4,6 +4,8 @@ const {
   updateArticleById,
 } = require("../models/articles_models.js");
 
+const { checkExists } = require("../db/helpers/utils.js");
+
 exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
 
@@ -15,11 +17,27 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles()
-    .then((articles) => {
-      res.status(200).send({ articles });
-    })
-    .catch(next);
+  const {
+    query: { sort_by, order, topic },
+  } = req;
+
+  if (topic) {
+    checkExists("articles", "topic", topic)
+      .then(() => {
+        fetchArticles(sort_by, order, topic)
+          .then((articles) => {
+            res.status(200).send({ articles });
+          })
+          .catch(next);
+      })
+      .catch(next);
+  } else {
+    fetchArticles(sort_by, order)
+      .then((articles) => {
+        res.status(200).send({ articles });
+      })
+      .catch(next);
+  }
 };
 
 exports.patchArticleById = (req, res, next) => {
