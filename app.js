@@ -42,7 +42,7 @@ app.post("/api/articles/:article_id/comments", postComment);
 app.get("/api/users", getUsers);
 
 //API
-app.get("/api", getEndpoints);
+app.get("/api/", getEndpoints);
 
 //Error handlers
 app.all("/*", (req, res) => {
