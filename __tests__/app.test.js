@@ -440,7 +440,7 @@ describe("app", () => {
         return request(app)
           .get("/api")
           .expect(200)
-          .then(({ body: { endpoints } }) => {
+          .then(({ body: endpoints }) => {
             expect(endpoints["GET /api"].description).toBe(
               "serves up a json representation of all the available endpoints of the api"
             );
