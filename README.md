@@ -40,15 +40,20 @@ Minimum version of Postgres: `12.9`
 
 
 ### Dependencies
-In order to have the app running correctly, the following dependencies need to be installed:
+The necessary dependencies to run the project need to be installed using npm package manager running the command: `npm install`. The following dependencies should have now been installed:
 
-  * express: `npm install express`
-  * dotenv: `npm install dotenv --save`
-  * pg: `npm install pg`
-  * pg-format: `npm install pg-format`
+**Development dependencies**
 
-These dependencies can all be installed at the same time running the following command: `npm install`
+  * express
+  * dotenv
+  * pg
+  * pg-format
 
+**Testing dependencies**
+  * jest
+  * supertest
+  * jest-extended
+  
 ### Creating .env files
 Please, bear in mind that after cloning this repo you won't have access to the necessary environment variables. Therefore, in order to successfully connect locally to the two databases, two `.env` files must be created.
 
@@ -69,4 +74,4 @@ The following command will run the tests:
 
 `npm test app`
 
-**Note**: Test dependencies are assumed to have already been installed after running `npm install` to install the development dependencies.
+**Note**: Test dependencies are assumed to have already been installed after running `npm install` when installing the development dependencies.
