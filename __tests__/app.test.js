@@ -415,7 +415,7 @@ describe("app", () => {
     });
   });
 
-  describe.only("Users", () => {
+  describe("Users", () => {
     describe("GET - api/users", () => {
       test("Status 200 - Responds with an array of objects, and each object has a property of 'username'", () => {
         return request(app)
