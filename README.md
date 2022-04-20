@@ -3,7 +3,7 @@
 ## Introduction
 
 This API project ([https://quarki-nc-news.herokuapp.com/api/](https://quarki-nc-news.herokuapp.com/api/)) has been built for the purpose of accessing data programatically. 
-This data will be accessed from the following front-end project:  ()
+This data will be accessed from the following front-end project: ([https://github.com/aasaezm/nc-news](https://github.com/aasaezm/nc-news)) 
 
 The API has available the following endpoints:
 > * GET /api
