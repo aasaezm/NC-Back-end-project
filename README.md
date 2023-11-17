@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This API project ([https://quarki-nc-news.herokuapp.com/api/](https://quarki-nc-news.herokuapp.com/api/)) has been built for the purpose of accessing data programatically. 
+This API project https://nc-news-h3vv.onrender.com/api has been built for the purpose of accessing data programatically. 
 This data will be accessed from the following front-end project:  ()
 
 The API has available the following endpoints:
